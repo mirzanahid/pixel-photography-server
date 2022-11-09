@@ -24,6 +24,7 @@ async function run() {
 
     try {
         const serviceCollection = client.db('pixelsPhotography').collection('services')
+        const reviewCollection = client.db('pixelsPhotography').collection('reviews')
         app.get('/home_services', async (req, res) => {
             const query = {};
             const cursor = serviceCollection.find(query);
@@ -50,6 +51,32 @@ async function run() {
             const service = req.body;
             const result = await  serviceCollection.insertOne(service);
             res.send(result);
+        })
+
+        //add review
+        app.post('/review', async (req, res) => {
+            const review = req.body;
+            const result = await  reviewCollection.insertOne(review);
+            res.send(result);
+        })
+
+        app.get('/reviews', async (req, res) => {
+            const query = {};
+            const cursor = reviewCollection.find(query);
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        })
+
+        app.get('/private_reviews', async (req, res) => {
+            let query = {};
+            if(req.query.email){
+                query = {
+                    email: req.query.email``
+                }
+            }
+            const cursor = reviewCollection.find(query);
+            const reviews = await cursor.toArray();
+            res.send(reviews);
         })
     }
     finally {
