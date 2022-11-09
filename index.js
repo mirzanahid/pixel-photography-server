@@ -11,10 +11,6 @@ app.use(express.json());
 
 
 
-
-
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.vsmf7bv.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -49,29 +45,41 @@ async function run() {
         app.post('/addService', async (req, res) => {
 
             const service = req.body;
-            const result = await  serviceCollection.insertOne(service);
+            const result = await serviceCollection.insertOne(service);
             res.send(result);
         })
 
         //add review
         app.post('/review', async (req, res) => {
             const review = req.body;
-            const result = await  reviewCollection.insertOne(review);
+            const result = await reviewCollection.insertOne(review);
             res.send(result);
         })
 
-        app.get('/reviews', async (req, res) => {
-            const query = {};
+        // app.get('/reviews', async (req, res) => {
+        //     const query = {};
+        //     const cursor = reviewCollection.find(query);
+        //     const reviews = await cursor.toArray();
+        //     res.send(reviews);
+        // })
+
+        app.get('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            let query = {
+                "service_id": id
+            }
             const cursor = reviewCollection.find(query);
             const reviews = await cursor.toArray();
             res.send(reviews);
+
         })
+
 
         app.get('/private_reviews', async (req, res) => {
             let query = {};
-            if(req.query.email){
+            if (req.query.email) {
                 query = {
-                    email: req.query.email``
+                    email: req.query.email
                 }
             }
             const cursor = reviewCollection.find(query);
@@ -90,9 +98,7 @@ run().catch(error => console.error(error))
 app.get('/', (req, res) => {
     res.send('PixelPhotography api running!')
 });
-app.get('/a', (req, res) => {
-    res.send('PixelPhotography api running!')
-});
+
 
 
 
