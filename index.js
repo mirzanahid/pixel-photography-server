@@ -119,7 +119,6 @@ async function run() {
             }
             const result = await reviewCollection.updateOne(query, updatedDoc);
             res.send(result);
-            console.log(review)
         });
 
         app.delete('/reviews/:id', async (req, res) => {
