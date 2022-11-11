@@ -83,7 +83,7 @@ async function run() {
             let query = {
                 "service_id": id
             }
-            const cursor = reviewCollection.find(query);
+            const cursor = reviewCollection.find(query).sort("post_date", 1);
             const reviews = await cursor.toArray();
             res.send(reviews);
 
@@ -93,8 +93,8 @@ async function run() {
         // user review by email api
         app.get('/private_reviews', verifyJWT, async (req, res) => {
             const decoded = req.decoded;
-            if(decoded.email !== req.query.email){
-                res.status(403).send({message: 'unauthorized access'})
+            if (decoded.email !== req.query.email) {
+                res.status(403).send({ message: 'unauthorized access' })
             }
             let query = {};
             if (req.query.email) {
@@ -122,8 +122,6 @@ async function run() {
             console.log(review)
         });
 
-
-        // review delete api
         app.delete('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -131,12 +129,6 @@ async function run() {
             res.send(result);
 
         })
-
-
-
-
-
-
 
     }
     finally {
@@ -150,9 +142,6 @@ run().catch(error => console.error(error))
 app.get('/', (req, res) => {
     res.send('PixelPhotography api running!')
 });
-
-
-
 
 
 
