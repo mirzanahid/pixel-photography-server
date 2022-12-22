@@ -108,18 +108,33 @@ async function run() {
         })
 
 
-        app.patch('/updatereviews/:id', async (req, res) => {
+        app.put('/updatereviews/:id', async (req, res) => {
             const id = req.params.id;
-            const review = req.body.updateReviewValue;
-            const query = { _id: ObjectId(id) }
+            const user_review = req.body.user_review;
+            console.log(user_review)
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true }
             const updatedDoc = {
-                $set: {
-                    user_review: review
-                }
+                $set: {"user_review": user_review }
+               
             }
-            const result = await reviewCollection.updateOne(query, updatedDoc);
+            const result = await reviewCollection.updateOne(filter, updatedDoc,options);
             res.send(result);
         });
+
+        // app.put('/bookings/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const payment_status = req.body;
+        //     const filter = { _id: ObjectId(id) }
+        //     const options = { upsert: true }
+        //     const updatedDoc = {
+        //         $set: payment_status
+        //     }
+        //     const result = await bookingsCollection.updateOne(filter, updatedDoc, options);
+        //     res.send(result);
+        // });
+
+
 
         app.delete('/reviews/:id', async (req, res) => {
             const id = req.params.id;
